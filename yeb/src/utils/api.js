@@ -2,6 +2,7 @@ import axios from 'axios'
 import {Message} from 'element-ui';
 import router from '../router'
 
+// 响应拦截器
 axios.interceptors.response.use(success => {
     // 业务逻辑错误
     if (success.status && success.status == 200) {
@@ -30,3 +31,13 @@ axios.interceptors.response.use(success => {
         }
     }
 })
+
+let base = '';
+
+export const postRequest = (url, params) => {
+    return axios({
+        method: 'post',
+        url: `${base}${url}`,
+        data: params
+    })
+}
