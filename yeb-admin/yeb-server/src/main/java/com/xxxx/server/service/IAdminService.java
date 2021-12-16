@@ -21,10 +21,11 @@ public interface IAdminService extends IService<Admin> {
 	 *
 	 * @param username
 	 * @param password
+	 * @param code
 	 * @param request
 	 * @return
 	 */
-	RespBean login(String username, String password, HttpServletRequest request);
+	RespBean login(String username, String password, String code, HttpServletRequest request);
 
 	/**
 	 * 根据用户名获取用户
