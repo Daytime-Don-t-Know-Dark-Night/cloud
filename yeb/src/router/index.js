@@ -10,8 +10,9 @@ Vue.use(VueRouter)
 const routes = [
     {
         path: '/',
-        name: 'Login',
-        component: Login
+        name: '导航一',
+        component: Login,
+        hidden: true
     },
     {
         path: '/home',
@@ -21,12 +22,12 @@ const routes = [
         children: [
             {
                 path: '/test1',
-                name: 'Test1',
+                name: '选项1',
                 component: Test1
             },
             {
                 path: '/test2',
-                name: 'Test2',
+                name: '选项2',
                 component: Test2
             }
         ]
