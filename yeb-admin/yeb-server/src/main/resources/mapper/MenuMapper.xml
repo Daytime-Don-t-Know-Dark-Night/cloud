@@ -67,7 +67,7 @@
         where m1.id = m2.parentId
           and m2.id = mr.mid
           and mr.rid = ar.rid
-          and ar.adminId = 1
+          and ar.adminId = #{id}
           and m2.enabled = TRUE
         ORDER BY m2.id
     </select>
