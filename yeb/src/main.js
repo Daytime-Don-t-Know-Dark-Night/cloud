@@ -19,6 +19,13 @@ Vue.prototype.putRequest = putRequest;
 Vue.prototype.getRequest = getRequest;
 Vue.prototype.deleteRequest = deleteRequest;
 
+// 路由导航守卫: (全局前置守卫)
+router.beforeEach((to, from, next) => {
+    console.log(to);
+    console.log(from);
+    next();
+})
+
 new Vue({
     router,
     store,
