@@ -4,11 +4,13 @@ import router from './router'
 import store from './store'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import 'font-awesome/css/font-awesome.css'
 
 import {postRequest} from "./utils/api";
 import {putRequest} from "./utils/api";
 import {getRequest} from "./utils/api";
 import {deleteRequest} from "./utils/api";
+import {initMenu} from "@/utils/menus";
 
 Vue.config.productionTip = false
 Vue.use(ElementUI);
@@ -21,9 +23,14 @@ Vue.prototype.deleteRequest = deleteRequest;
 
 // 路由导航守卫: (全局前置守卫)
 router.beforeEach((to, from, next) => {
-    console.log(to);
-    console.log(from);
-    next();
+    if (window.sessionStorage.getItem("tokenStr")) {
+        initMenu(router, store);
+        next();
+    } else {
+        if (to.path == '/') {
+            next();
+        }
+    }
 })
 
 new Vue({
