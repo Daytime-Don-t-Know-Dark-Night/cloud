@@ -13,6 +13,7 @@ import {deleteRequest} from "./utils/api";
 Vue.config.productionTip = false
 Vue.use(ElementUI);
 
+// 插件形式使用请求
 Vue.prototype.postRequest = postRequest;
 Vue.prototype.putRequest = putRequest;
 Vue.prototype.getRequest = getRequest;
