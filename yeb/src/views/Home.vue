@@ -1,7 +1,19 @@
 <template>
 	<div>
 		<el-container>
-			<el-header>Header</el-header>
+			<el-header class="homeHeader">
+				<div class="title">云E办</div>
+				<el-dropdown class="userInfo">
+					<span class="el-dropdown-link">
+					    {{ user.name }}<i><img :src="user.userFace"></i>
+					</span>
+					<el-dropdown-menu slot="dropdown">
+						<el-dropdown-item>个人中心</el-dropdown-item>
+						<el-dropdown-item>设置</el-dropdown-item>
+						<el-dropdown-item>注销登录</el-dropdown-item>
+					</el-dropdown-menu>
+				</el-dropdown>
+			</el-header>
 			<el-container>
 				<el-aside width="200px">
 					<!-- 侧边栏 -->
@@ -31,8 +43,13 @@
 <script>
 export default {
 	name: "Home",
+	data() {
+		return {
+			user: JSON.parse(window.sessionStorage.getItem("user"))
+		}
+	},
 	computed: {
-		routes(){
+		routes() {
 			return this.$store.state.routes;
 		}
 	}
@@ -40,37 +57,31 @@ export default {
 </script>
 
 <style scoped>
-.el-header, .el-footer {
-	background-color: #B3C0D1;
-	color: #333;
-	text-align: center;
-	line-height: 60px;
+
+.homeHeader {
+	background: #409eff;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 15px;
+	box-sizing: border-box;
 }
 
-.el-aside {
-	background-color: #D3DCE6;
-	color: #333;
-	text-align: center;
-	line-height: 200px;
+.homeHeader .title {
+	font-size: 30px;
+	font-family: 宋体;
+	color: white;
 }
 
-.el-main {
-	background-color: #E9EEF3;
-	color: #333;
-	text-align: center;
-	line-height: 160px;
+.homeHeader .userInfo {
+	cursor: pointer;
 }
 
-body > .el-container {
-	margin-bottom: 40px;
+.el-dropdown-link img {
+	width: 48px;
+	height: 48px;
+	border-radius: 24px;
+	margin-left: 8px;
 }
 
-.el-container:nth-child(5) .el-aside,
-.el-container:nth-child(6) .el-aside {
-	line-height: 260px;
-}
-
-.el-container:nth-child(7) .el-aside {
-	line-height: 320px;
-}
 </style>
