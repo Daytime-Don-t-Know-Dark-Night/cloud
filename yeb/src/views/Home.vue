@@ -1,7 +1,19 @@
 <template>
 	<div>
 		<el-container>
-			<el-header>Header</el-header>
+			<el-header class="homeHeader">
+				<div class="title">云E办</div>
+				<el-dropdown class="userInfo" @command="commandHandler">
+					<span class="el-dropdown-link">
+					    {{ user.name }}<i><img :src="user.userFace"></i>
+					</span>
+					<el-dropdown-menu slot="dropdown">
+						<el-dropdown-item command="userinfo">个人中心</el-dropdown-item>
+						<el-dropdown-item command="setting">设置</el-dropdown-item>
+						<el-dropdown-item command="logout">注销登录</el-dropdown-item>
+					</el-dropdown-menu>
+				</el-dropdown>
+			</el-header>
 			<el-container>
 				<el-aside width="200px">
 					<!-- 侧边栏 -->
@@ -21,6 +33,14 @@
 
 				</el-aside>
 				<el-main>
+					<el-breadcrumb separator-class="el-icon-arrow-right"
+					               v-if="this.$router.currentRoute.path !== '/home'">
+						<el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+						<el-breadcrumb-item>{{ this.$router.currentRoute.name }}</el-breadcrumb-item>
+					</el-breadcrumb>
+					<div class="homeWelcome" v-if="this.$router.currentRoute.path === '/home'">
+						欢迎来到云E办系统
+					</div>
 					<router-view/>
 				</el-main>
 			</el-container>
@@ -31,46 +51,79 @@
 <script>
 export default {
 	name: "Home",
+	data() {
+		return {
+			user: JSON.parse(window.sessionStorage.getItem("user"))
+		}
+	},
 	computed: {
-		routes(){
+		routes() {
 			return this.$store.state.routes;
+		}
+	},
+	methods: {
+		commandHandler(command) {
+			if (command === 'logout') {
+				this.$confirm('此操作将注销登录, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					this.postRequest('/logout');
+					// 清空用户信息
+					window.sessionStorage.removeItem("tokenStr");
+					window.sessionStorage.removeItem("user");
+					// 清空菜单
+					this.$store.commit("initRouters", []);
+					// 重定向
+					this.$router.replace("/");
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '操作已取消'
+					});
+				});
+
+			}
 		}
 	}
 }
 </script>
 
 <style scoped>
-.el-header, .el-footer {
-	background-color: #B3C0D1;
-	color: #333;
+
+.homeHeader {
+	background: #409eff;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 15px;
+	box-sizing: border-box;
+}
+
+.homeHeader .title {
+	font-size: 30px;
+	font-family: 宋体;
+	color: white;
+}
+
+.homeHeader .userInfo {
+	cursor: pointer;
+}
+
+.el-dropdown-link img {
+	width: 48px;
+	height: 48px;
+	border-radius: 24px;
+	margin-left: 8px;
+}
+
+.homeWelcome {
 	text-align: center;
-	line-height: 60px;
+	font-size: 30px;
+	font-family: 华文楷体;
+	color: #409eff;
+	padding-top: 50px;
 }
 
-.el-aside {
-	background-color: #D3DCE6;
-	color: #333;
-	text-align: center;
-	line-height: 200px;
-}
-
-.el-main {
-	background-color: #E9EEF3;
-	color: #333;
-	text-align: center;
-	line-height: 160px;
-}
-
-body > .el-container {
-	margin-bottom: 40px;
-}
-
-.el-container:nth-child(5) .el-aside,
-.el-container:nth-child(6) .el-aside {
-	line-height: 260px;
-}
-
-.el-container:nth-child(7) .el-aside {
-	line-height: 320px;
-}
 </style>
