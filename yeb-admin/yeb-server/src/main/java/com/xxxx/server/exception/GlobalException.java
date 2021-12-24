@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 
 /**
+ * 全局异常处理
+ *
  * @Author dingc
  * @Date 2021/12/24 21:44
  */
