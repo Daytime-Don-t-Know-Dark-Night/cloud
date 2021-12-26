@@ -55,12 +55,63 @@
 				</el-table-column>
 				<el-table-column label="操作">
 					<template slot-scope="scope">
-						<el-button size="small">编辑</el-button>
+						<el-button size="small" @click="showEditView(scope.row)">编辑</el-button>
 						<el-button size="small" type="danger" @click="deleteHandler(scope.row)">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
 		</div>
+
+		<el-dialog
+			title="编辑职称"
+			:visible.sync="dialogVisible"
+			width="30%">
+			<table>
+				<tr>
+					<td>
+						<el-tag>职称名称</el-tag>
+					</td>
+					<td>
+						<el-input v-model="updateJl.name" size="small" style="margin-left: 5px"></el-input>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<el-tag>职称等级</el-tag>
+					</td>
+					<td>
+						<el-select size="small" v-model="updateJl.titleLevel" placeholder="职称等级"
+						           style="margin-left: 6px; margin-right: 6px">
+							<el-option
+								v-for="item in titleLevels"
+								:key="item"
+								:label="item"
+								:value="item">
+							</el-option>
+						</el-select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<el-tag>是否启用</el-tag>
+					</td>
+					<td>
+						<el-switch
+							style="margin-left: 6px"
+							v-model="updateJl.enabled"
+							active-color="#13ce66"
+							inactive-color="#ff4949"
+							active-text="已启用"
+							inactive-text="未启用">
+						</el-switch>
+					</td>
+				</tr>
+			</table>
+			<span slot="footer" class="dialog-footer">
+			    <el-button size="small" @click="dialogVisible = false">取 消</el-button>
+			    <el-button size="small" type="primary" @click="doUpdate">确 定</el-button>
+		  </span>
+		</el-dialog>
 	</div>
 </template>
 
@@ -73,6 +124,11 @@ export default {
 				name: '',
 				titleLevel: ''
 			},
+			updateJl: {
+				name: '',
+				titleLevel: '',
+				enabled: false
+			},
 			titleLevels: [
 				'正高级',
 				'副高级',
@@ -80,7 +136,8 @@ export default {
 				'中级',
 				'初级'
 			],
-			jls: []
+			jls: [],
+			dialogVisible: false
 		}
 	},
 	mounted() {
@@ -110,7 +167,7 @@ export default {
 			}
 		},
 		// 删除职称
-		deleteHandler(data){
+		deleteHandler(data) {
 			this.$confirm('此操作将永久删除[' + data.name + ']职称, 是否继续?', '提示', {
 				confirmButtonText: '确定',
 				cancelButtonText: '取消',
@@ -128,6 +185,19 @@ export default {
 					message: '已取消删除'
 				});
 			});
+		},
+		showEditView(data) {
+			Object.assign(this.updateJl, data);
+			this.updateJl.createDate = '';
+			this.dialogVisible = true;
+		},
+		doUpdate() {
+			this.putRequest('/system/basic/joblevel/', this.updateJl).then(resp => {
+				if (resp) {
+					this.initJls();
+					this.dialogVisible = false;
+				}
+			})
 		}
 	}
 }
