@@ -2,7 +2,7 @@
 	<div>
 		<el-container>
 			<el-header class="homeHeader">
-				<div class="title">云E办</div>
+				<div class="title">深蓝</div>
 				<el-dropdown class="userInfo" @command="commandHandler">
 					<span class="el-dropdown-link">
 					    {{ user.name }}<i><img :src="user.userFace"></i>
@@ -93,7 +93,7 @@ export default {
 <style scoped>
 
 .homeHeader {
-	background: #409eff;
+	background: #4367d5;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
