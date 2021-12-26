@@ -42,7 +42,7 @@
 					<template slot-scope="scope">
 						<el-button
 							size="mini"
-							@click="handleEdit(scope.$index, scope.row)">编辑
+							@click="showEditView(scope.$index, scope.row)">编辑
 						</el-button>
 						<el-button
 							size="mini"
@@ -53,6 +53,19 @@
 				</el-table-column>
 			</el-table>
 		</div>
+		<el-dialog
+			title="编辑职位"
+			:visible.sync="dialogVisible"
+			width="30%">
+			<div>
+				<el-tag>职位名称</el-tag>
+				<el-input v-model="updatePos.name" size="small" class="updatePosInput"></el-input>
+			</div>
+			<span slot="footer" class="dialog-footer">
+			    <el-button size="small" @click="dialogVisible = false">取 消</el-button>
+			    <el-button size="small" type="primary" @click="doUpdate">确 定</el-button>
+		  </span>
+		</el-dialog>
 	</div>
 </template>
 
@@ -64,7 +77,11 @@ export default {
 			pos: {
 				name: ''
 			},
-			positions: []
+			positions: [],
+			dialogVisible: false,
+			updatePos: {
+				name: ''
+			}
 		}
 	},
 	// 生命周期: 页面初始化时
@@ -95,8 +112,20 @@ export default {
 			}
 		},
 		// 编辑
-		handleEdit(index, data) {
-
+		showEditView(index, data) {
+			// 在编辑框中把data的数据传入
+			Object.assign(this.updatePos, data);
+			// this.updatePos = data;
+			this.updatePos.createDate = '';
+			this.dialogVisible = true;
+		},
+		doUpdate() {
+			this.putRequest('/sys/basic/pos/', this.updatePos).then(resp => {
+				if (resp) {
+					this.initPositions();
+					this.dialogVisible = false;
+				}
+			})
 		},
 		// 删除
 		handleDelete(index, data) {
@@ -129,5 +158,10 @@ export default {
 
 .posManaMain {
 	margin-top: 10px;
+}
+
+.updatePosInput {
+	width: 200px;
+	margin-left: 8px;
 }
 </style>
