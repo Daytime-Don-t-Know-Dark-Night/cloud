@@ -8,7 +8,7 @@
 			<el-button size="small" type="primary" icon="el-icon-plus">添加角色</el-button>
 		</div>
 		<div class="permissManaMain">
-			<el-collapse accordion @change="change">
+			<el-collapse v-model="activeName" accordion @change="change">
 				<el-collapse-item :title="r.nameZh" :name="r.id" v-for="(r, index) in roles" :key="index">
 					<el-card class="box-card">
 						<div slot="header" class="clearfix">
@@ -19,7 +19,16 @@
 							</el-button>
 						</div>
 						<div>
-							<el-tree show-checkbox :data="allMenus" :props="defaultProps"></el-tree>
+							<el-tree show-checkbox
+							         :data="allMenus"
+							         :props="defaultProps"
+							         ref="tree"
+							         :default-checked-keys="selectMenus"
+							         node-key="id"></el-tree>
+							<div style="display: flex;justify-content: flex-end">
+								<el-button size="mini" @click="cancelUpdate">取消修改</el-button>
+								<el-button size="mini" type="primary" @click="doUpdate(r.id, index)">确认修改</el-button>
+							</div>
 						</div>
 					</el-card>
 				</el-collapse-item>
@@ -42,7 +51,9 @@ export default {
 			defaultProps: {
 				children: 'children',
 				label: 'name'
-			}
+			},
+			selectMenus: [],
+			activeName: -1
 		}
 	},
 	mounted() {
@@ -60,14 +71,43 @@ export default {
 			if (rid) {
 				// alert(rid)
 				this.initAllMenus();
+				this.initSelectedMenus(rid);
 			}
 		},
-		initAllMenus(){
+		initAllMenus() {
 			this.getRequest('/system/basic/permiss/menus').then(resp => {
-				if(resp){
+				if (resp) {
 					this.allMenus = resp;
 				}
 			})
+		},
+		// 根据角色id获取菜单列表
+		initSelectedMenus(rid) {
+			this.getRequest('/system/basic/permiss/mid/' + rid).then(resp => {
+				if (resp) {
+					this.selectMenus = resp;
+				}
+			})
+		},
+		// 更新角色对应的菜单列表
+		doUpdate(rid, index) {
+			let tree = this.$refs.tree[index];
+			let selectedKeys = tree.getCheckedKeys(true);
+			// console.log(selectedKeys);
+			let url = '/system/basic/permiss/?rid=' + rid;
+			selectedKeys.forEach(key => {
+				url += '&mids=' + key;
+			});
+			this.putRequest(url).then(resp => {
+				if (resp) {
+					this.initRoles();
+					this.activeName = -1;
+				}
+			})
+		},
+		// 取消更新角色菜单
+		cancelUpdate() {
+			this.activeName = -1;
 		}
 	}
 }
