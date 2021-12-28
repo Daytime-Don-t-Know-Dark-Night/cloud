@@ -55,6 +55,13 @@
             <artifactId>mybatis-plus-core</artifactId>
             <version>3.3.1.tmp</version>
         </dependency>
+
+        <!--screw包, 生成数据库文档-->
+        <dependency>
+            <groupId>cn.smallbun.screw</groupId>
+            <artifactId>screw-core</artifactId>
+            <version>1.0.5</version>
+        </dependency>
     </dependencies>
 
 </project>
